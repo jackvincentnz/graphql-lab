@@ -24,8 +24,23 @@ module.exports = {
     },
     launch: (_, { id }, { dataSources }) =>
       dataSources.launchAPI.getLaunchById({ launchId: id }),
-     me: async (_, __, { dataSources }) =>
+    me: async (_, __, { dataSources }) =>
       dataSources.userAPI.findOrCreateUser(),
+    activity: (_, { id }, { dataSources }) =>
+     dataSources.activityAPI.getActivityById({ activityId: id }),
+      // TODO: should this be async / await? What is the benefit vs the launch query not being async?
+      // TODO: add page size and cursor
+    activities: (_, __, { dataSources }) =>
+    dataSources.activityAPI.getActivities(),
+  },
+  Activity: {
+    plannedDate: (activity, _) => {
+      return activity.startOn ? {
+        startOn: activity.startOn,
+        endOn: activity.endOn ? activity.endOn : null,
+        ongoing: !!activity.startOn && !activity.endOn
+      } : null;
+    }
   },
   Mission: {
     // make sure the default size is 'large' in case user doesn't specify
@@ -55,6 +70,22 @@ module.exports = {
     },
   },
   Mutation: {
+    addActivity: async (_, { name }, { dataSources }) => {
+      const result = await dataSources.activityAPI.addActivity({ name });
+  
+      if (!result)
+        return {
+          success: false,
+          message: 'failed to add activity',
+        };
+  
+      const activity = await dataSources.activityAPI.getActivityById({ activityId: result.id });
+      return {
+        success: true,
+        message: 'activity added',
+        activities: [activity],
+      };
+    },
     login: async (_, { email }, { dataSources }) => {
       const user = await dataSources.userAPI.findOrCreateUser({ email });
       if (user) return Buffer.from(email).toString('base64');

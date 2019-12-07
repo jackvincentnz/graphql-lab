@@ -14,6 +14,8 @@ const typeDefs = gql`
     ): LaunchConnection!
     launch(id: ID!): Launch
     me: User
+    activity(id: ID!): Activity
+    activities: [Activity]!
   }
 
   """
@@ -21,12 +23,11 @@ const typeDefs = gql`
   last item in the list. Pass this cursor to the launches query to fetch results
   after these.
   """
-  type LaunchConnection { # add this below the Query type as an additional type.
+  type LaunchConnection {
     cursor: String!
     hasMore: Boolean!
     launches: [Launch]!
   }
-
 
   type Launch {
     id: ID!
@@ -34,6 +35,18 @@ const typeDefs = gql`
     mission: Mission
     rocket: Rocket
     isBooked: Boolean!
+  }
+
+  type Activity {
+    id: ID!
+    name: String
+    plannedDate: PlannedDate
+  }
+
+  type PlannedDate {
+    startOn: String!
+    endOn: String
+    ongoing: Boolean!
   }
 
   type Rocket {
@@ -59,6 +72,9 @@ const typeDefs = gql`
   }
 
   type Mutation {
+    # if false, adding activity failed -- check errors
+    addActivity(name: String!): ActivityUpdateResponse!
+
     # if false, booking trips failed -- check errors
     bookTrips(launchIds: [ID]!): TripUpdateResponse!
   
@@ -72,6 +88,12 @@ const typeDefs = gql`
     success: Boolean!
     message: String
     launches: [Launch]
+  }
+
+  type ActivityUpdateResponse {
+    success: Boolean!
+    message: String
+    activities: [Activity]
   }
 `;
 

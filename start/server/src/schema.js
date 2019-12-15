@@ -75,6 +75,10 @@ const typeDefs = gql`
     # if false, adding activity failed -- check errors
     addActivity(name: String!): ActivityUpdateResponse!
 
+
+    # if false, change date failed -- check errors
+    changeActivityDate(id: String!, date: String!): ActivityUpdateResponse!
+
     # if false, booking trips failed -- check errors
     bookTrips(launchIds: [ID]!): TripUpdateResponse!
   

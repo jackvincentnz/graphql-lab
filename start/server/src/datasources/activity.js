@@ -1,6 +1,6 @@
 const { DataSource } = require('apollo-datasource');
 
-newActivityId = 100;
+let newActivityId = 100;
 const activities = [
   { id: '1', name: 'Unscheduled',     startOn: '', endOn: '', },
   { id: '2', name: 'Single Date',     startOn: '2019-01-01', endOn: '2019-01-01', },
@@ -27,14 +27,24 @@ class ActivityAPI extends DataSource {
     return activities.find(a => a.id === activityId);
   }
 
-  // TODO: figure out why subsequent calls to add activity do not make it into here.
   async addActivity({ name }) {
     const newActivity = { id: newActivityId.toString(), name};
     
     activities.push(newActivity);
-    this.newActivityId++;
+    newActivityId++;
 
     return newActivity;
+  }
+
+  async changeActivityDate({ id, date }) {
+    const activity = activities.find(activity => activity.id === id);
+    if (activity) {
+      // TODO: date validation
+      activity.startOn = date;
+      activity.endOn = date;
+
+      return activity;
+    }
   }
 }
 

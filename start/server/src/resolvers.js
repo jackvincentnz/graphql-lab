@@ -86,6 +86,22 @@ module.exports = {
         activities: [activity],
       };
     },
+    changeActivityDate: async (_, { id, date, }, { dataSources }) => {
+      const result = await dataSources.activityAPI.changeActivityDate({ id, date });
+  
+      if (!result)
+        return {
+          success: false,
+          message: 'failed to change date',
+        };
+  
+      const activity = await dataSources.activityAPI.getActivityById({ activityId: result.id });
+      return {
+        success: true,
+        message: 'activity date changed',
+        activities: [activity],
+      };
+    },
     login: async (_, { email }, { dataSources }) => {
       const user = await dataSources.userAPI.findOrCreateUser({ email });
       if (user) return Buffer.from(email).toString('base64');

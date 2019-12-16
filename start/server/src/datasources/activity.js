@@ -24,6 +24,7 @@ class ActivityAPI extends DataSource {
   }
 
   async getActivityById({ activityId }) {
+    await sleep(1000);
     return activities.find(a => a.id === activityId);
   }
 
@@ -49,3 +50,7 @@ class ActivityAPI extends DataSource {
 }
 
 module.exports = ActivityAPI;
+
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}

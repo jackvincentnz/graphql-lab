@@ -4,7 +4,8 @@ import { map } from 'rxjs/operators';
 import { Observable, of } from 'rxjs';
 
 import {Apollo, QueryRef} from 'apollo-angular';
-import { ACTIVITY_QUERY, ACTIVITIES_QUERY } from '../graphql/queries';
+
+import { ListedActivitiesGQL, ActivityMetaDataGQL } from 'src/generated/graphql';
 
 @Injectable({
   providedIn: 'root'
@@ -18,12 +19,11 @@ export class ActivityQueryService {
 
   private activitiesQueryRef: QueryRef<any>; 
 
-  constructor(private apollo: Apollo) {
-    this.activitiesQueryRef = this.apollo.watchQuery<any>({ 
-      query: ACTIVITIES_QUERY, 
-      // TODO: figure out network change notification
-      notifyOnNetworkStatusChange: true 
-    });
+  constructor(
+    private listedActivitiesService: ListedActivitiesGQL, 
+    private activityMetaDataService: ActivityMetaDataGQL 
+  ) {
+    this.activitiesQueryRef = this.listedActivitiesService.watch();
 
     //const source$ = this.apollo.query<any>({ query: ACTIVITIES_QUERY });
     const source$ = this.activitiesQueryRef.valueChanges;
@@ -37,16 +37,6 @@ export class ActivityQueryService {
 
   // TODO: move to activity details
   public activityById$(activityId: string) {
-    return this.apollo.watchQuery<any>({ 
-      query: ACTIVITY_QUERY, 
-      variables: { activityId: activityId },
-      // TODO: figure out network change notification
-      notifyOnNetworkStatusChange: true 
-    }).valueChanges;
-    
-    // return this.apollo.query<any>({ 
-    //   query: GET_ACTIVITY, 
-    //   variables: { activityId: activityId },
-    // });
+    return this.activityMetaDataService.watch({ activityId: activityId }).valueChanges;
   }
 }

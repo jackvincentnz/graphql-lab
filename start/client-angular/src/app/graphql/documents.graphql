@@ -1,0 +1,25 @@
+fragment ActivitySummary on Activity {
+    id
+    name
+}
+
+query ListedActivities {
+    activities {
+        ...ActivitySummary
+    }
+}
+
+query ActivityMetaData($activityId: ID!) {
+    activity(id: $activityId) {
+        ...ActivitySummary
+    }
+}
+
+mutation addActivity($name: String!) {
+    addActivity(name: $name) {
+        activities {
+            id
+            name
+        }
+    }
+}

@@ -15,7 +15,7 @@ query ActivityMetaData($activityId: ID!) {
     }
 }
 
-mutation addActivity($name: String!) {
+mutation AddActivity($name: String!) {
     addActivity(name: $name) {
         activities {
             id

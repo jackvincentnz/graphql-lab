@@ -9,27 +9,28 @@ import { AddActivityGQL, ListedActivitiesQuery, ListedActivitiesDocument } from 
 })
 export class AddActivityService {
   
-  constructor(private apollo: Apollo, private addNewActivityGQL: AddActivityGQL) { }
+  constructor(private apollo: Apollo, private addActivityMutation: AddActivityGQL) { }
 
   public addActivity(name: string) {
-    this.addNewActivityGQL.mutate({ name: name }, {
+    this.addActivityMutation.mutate({ name: name }, {
       update: (store, { data: { addActivity } }) => {
-      // TODO: type safety
-      const data = store.readQuery<ListedActivitiesQuery>({ query: ListedActivitiesDocument });
-      data.activities = [ ...data.activities, ...addActivity.activities ];
-      store.writeQuery<ListedActivitiesQuery>({ query: ListedActivitiesDocument, data });
-    },
-    optimisticResponse: {
-      __typename: 'Mutation',
-      addActivity: {
-        activities: [{
-          id: Date.now().toString(),
-          name: name,
-          __typename: "Activity"
-        }],
-        __typename: "ActivityUpdateResponse"
+        // TODO: type safety
+        const data = store.readQuery<ListedActivitiesQuery>({ query: ListedActivitiesDocument });
+        data.activities = [ ...data.activities, ...addActivity.activities ];
+        store.writeQuery<ListedActivitiesQuery>({ query: ListedActivitiesDocument, data });
       },
-    },
+
+      optimisticResponse: {
+        __typename: 'Mutation',
+        addActivity: {
+          activities: [{
+            id: Date.now().toString(),
+            name: name,
+            __typename: "Activity"
+          }],
+          __typename: "ActivityUpdateResponse"
+        },
+      },
   }).subscribe(({ data }) => {
       console.log('mutation response', data);
     },(error) => {

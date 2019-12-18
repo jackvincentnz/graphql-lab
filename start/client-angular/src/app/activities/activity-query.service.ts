@@ -20,10 +20,10 @@ export class ActivityQueryService {
   private activitiesQueryRef: QueryRef<any>; 
 
   constructor(
-    private listedActivitiesService: ListedActivitiesGQL, 
-    private activityMetaDataService: ActivityMetaDataGQL 
+    private listedActivitiesQuery: ListedActivitiesGQL, 
+    private activityMetaDataQuery: ActivityMetaDataGQL 
   ) {
-    this.activitiesQueryRef = this.listedActivitiesService.watch();
+    this.activitiesQueryRef = this.listedActivitiesQuery.watch();
 
     //const source$ = this.apollo.query<any>({ query: ACTIVITIES_QUERY });
     const source$ = this.activitiesQueryRef.valueChanges;
@@ -37,6 +37,6 @@ export class ActivityQueryService {
 
   // TODO: move to activity details
   public activityById$(activityId: string) {
-    return this.activityMetaDataService.watch({ activityId: activityId }).valueChanges;
+    return this.activityMetaDataQuery.watch({ activityId: activityId }).valueChanges;
   }
 }

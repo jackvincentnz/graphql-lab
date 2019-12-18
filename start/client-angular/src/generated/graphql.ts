@@ -244,7 +244,7 @@ export const ActivityMetaDataDocument = gql`
     
   }
 export const AddActivityDocument = gql`
-    mutation addActivity($name: String!) {
+    mutation AddActivity($name: String!) {
   addActivity(name: $name) {
     activities {
       id

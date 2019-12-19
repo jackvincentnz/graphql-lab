@@ -41,6 +41,7 @@ const typeDefs = gql`
     id: ID!
     name: String
     plannedDate: PlannedDate
+    owner: String @deprecated
   }
 
   type PlannedDate {

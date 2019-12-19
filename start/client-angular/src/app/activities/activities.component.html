@@ -12,7 +12,8 @@
     <a 
         [title]="activity.name + ' details'" 
         [routerLink]="['/activity', activity.id]"
-    >{{ activity.name }}</a>
+    >{{ activity.name }}</a> Selected = {{ activity.isSelected }}
+    <button (click)="onSelect(activity.id)">Select</button>
 </li>
 </ul>
 

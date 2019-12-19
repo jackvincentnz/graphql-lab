@@ -21,6 +21,8 @@ export class ActivitiesComponent {
 
   public readonly activity$: Observable<any>;
 
+  public readonly selectedActivity$: Observable<string>;
+
   constructor(private activityQueryService: ActivityQueryService) {
     // TODO: move to activity details.
     const activitySource$ = this.activityQueryService.activityById$("1");
@@ -30,6 +32,11 @@ export class ActivitiesComponent {
       startWith(true)
     );
     this.activity$ = activitySource$.pipe(map(result => result.data.activity));
+
+    this.selectedActivity$ = this.activityQueryService.selectedActivity$;
   }
 
+  public onSelect(id: string) {
+    console.log(id);
+  }
 }

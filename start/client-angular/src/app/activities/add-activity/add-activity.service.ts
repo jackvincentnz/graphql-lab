@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 
 import {Apollo} from 'apollo-angular';
 
-import { AddActivityGQL, ListedActivitiesQuery, ListedActivitiesDocument } from 'src/generated/graphql';
+import { AddActivityGQL, ListedActivitiesQuery, ListedActivitiesDocument } from '../../../generated/graphql';
 
 @Injectable({
   providedIn: 'root'

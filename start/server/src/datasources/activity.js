@@ -1,7 +1,7 @@
 const { DataSource } = require('apollo-datasource');
 
 let newActivityId = 100;
-const activities = [
+let activities = [
   { id: '1', name: 'Unscheduled',     startOn: '', endOn: '', },
   { id: '2', name: 'Single Date',     startOn: '2019-01-01', endOn: '2019-01-01', },
   { id: '3', name: 'Two Days',       startOn: '2019-01-01', endOn: '2019-01-02', },
@@ -24,11 +24,11 @@ class ActivityAPI extends DataSource {
   }
 
   async getActivityById({ activityId }) {
-    await sleep(1000);
     return activities.find(a => a.id === activityId);
   }
 
-  async addActivity({ name }) {
+  async addActivity({ name, slow }) {
+    if (slow) await sleep(1000);
     const newActivity = { id: newActivityId.toString(), name};
     
     activities.push(newActivity);
@@ -46,6 +46,11 @@ class ActivityAPI extends DataSource {
 
       return activity;
     }
+  }
+
+  async deleteActivity({ id }) {
+    activities = activities.filter(activity => activity.id !== id);
+    return activities;
   }
 }
 

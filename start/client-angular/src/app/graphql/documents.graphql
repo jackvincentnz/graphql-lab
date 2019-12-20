@@ -16,7 +16,7 @@ query ActivityMetaData($activityId: ID!) {
 }
 
 mutation AddActivity($name: String!) {
-    addActivity(name: $name) {
+    addActivity(name: $name, slow: true) {
         activities {
             id
             name

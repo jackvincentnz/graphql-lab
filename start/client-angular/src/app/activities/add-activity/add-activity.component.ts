@@ -1,7 +1,5 @@
-import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
-
-import { AddActivityService } from './add-activity.service';
+import { Component, Output, EventEmitter } from '@angular/core';
+import { FormBuilder, FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'app-add-activity',
@@ -9,18 +7,20 @@ import { AddActivityService } from './add-activity.service';
 })
 export class AddActivityComponent {
 
+  @Output()
+  public addActivity: EventEmitter<string>
+
   public addActivityForm: FormGroup;
 
   constructor(
-    private addActivityService: AddActivityService, 
     private formBuilder: FormBuilder,
   ) { 
+    this.addActivity = new EventEmitter<string>();
     this.addActivityForm = this.formBuilder.group({ name: '' });
   }
 
-  // TODO: move add activity form to child component with @Output and observe here.
   public onSubmit(name: string) {    
-    this.addActivityService.addActivity(this.nameControl.value);
+    this.addActivity.emit(this.nameControl.value);
     this.addActivityForm.reset();
   }
 

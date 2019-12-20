@@ -1,27 +1,10 @@
-<h1>Activities</h1>
+<app-activity-list 
+    [activities]="activities$ | async"
+    (delete)="onDelete($event)"
+>
+</app-activity-list>
 
-<div *ngIf="loading$ | async">
-    Loading...
-</div>
-<div *ngIf="errors$ | async">
-    Error :(
-</div>
-<ul>
-<li *ngFor="let activity of activities$ | async">
-    {{ activity.id }}: 
-    <a 
-        [title]="activity.name + ' details'" 
-        [routerLink]="['/activity', activity.id]"
-    >{{ activity.name }}</a>
-</li>
-</ul>
-
-<h2>Activity</h2>
-<div *ngIf="activityLoading$ | async">
-    Loading...
-</div>
-<div *ngIf="!(activityLoading$ | async)">
-    <p>{{ (activity$ | async)?.name }}</p>
-</div>
-
-<app-add-activity></app-add-activity>
+<app-add-activity 
+    (addActivity)="onAddActivity($event)"
+>
+</app-add-activity>

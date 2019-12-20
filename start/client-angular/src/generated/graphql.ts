@@ -16,6 +16,11 @@ export type Scalars = {
 
 
 
+/** 
+ * Simple wrapper around our list of launches that contains a cursor to the
+ * last item in the list. Pass this cursor to the launches query to fetch results
+ * after these.
+ */
 export type Activity = {
    __typename?: 'Activity',
   id: Scalars['ID'],
@@ -35,51 +40,17 @@ export enum CacheControlScope {
   Private = 'PRIVATE'
 }
 
-export type Launch = {
-   __typename?: 'Launch',
-  id: Scalars['ID'],
-  site?: Maybe<Scalars['String']>,
-  mission?: Maybe<Mission>,
-  rocket?: Maybe<Rocket>,
-  isBooked: Scalars['Boolean'],
-};
-
-/** 
- * Simple wrapper around our list of launches that contains a cursor to the
- * last item in the list. Pass this cursor to the launches query to fetch results
- * after these.
- */
-export type LaunchConnection = {
-   __typename?: 'LaunchConnection',
-  cursor: Scalars['String'],
-  hasMore: Scalars['Boolean'],
-  launches: Array<Maybe<Launch>>,
-};
-
-export type Mission = {
-   __typename?: 'Mission',
-  name?: Maybe<Scalars['String']>,
-  missionPatch?: Maybe<Scalars['String']>,
-};
-
-
-export type MissionMissionPatchArgs = {
-  mission?: Maybe<Scalars['String']>,
-  size?: Maybe<PatchSize>
-};
-
 export type Mutation = {
    __typename?: 'Mutation',
   addActivity: ActivityUpdateResponse,
   changeActivityDate: ActivityUpdateResponse,
-  bookTrips: TripUpdateResponse,
-  cancelTrip: TripUpdateResponse,
-  login?: Maybe<Scalars['String']>,
+  deleteActivity: ActivityUpdateResponse,
 };
 
 
 export type MutationAddActivityArgs = {
-  name: Scalars['String']
+  name: Scalars['String'],
+  slow?: Maybe<Scalars['Boolean']>
 };
 
 
@@ -89,24 +60,9 @@ export type MutationChangeActivityDateArgs = {
 };
 
 
-export type MutationBookTripsArgs = {
-  launchIds: Array<Maybe<Scalars['ID']>>
+export type MutationDeleteActivityArgs = {
+  id: Scalars['String']
 };
-
-
-export type MutationCancelTripArgs = {
-  launchId: Scalars['ID']
-};
-
-
-export type MutationLoginArgs = {
-  email?: Maybe<Scalars['String']>
-};
-
-export enum PatchSize {
-  Small = 'SMALL',
-  Large = 'LARGE'
-}
 
 export type PlannedDate = {
    __typename?: 'PlannedDate',
@@ -117,22 +73,8 @@ export type PlannedDate = {
 
 export type Query = {
    __typename?: 'Query',
-  launches: LaunchConnection,
-  launch?: Maybe<Launch>,
-  me?: Maybe<User>,
   activity?: Maybe<Activity>,
   activities: Array<Maybe<Activity>>,
-};
-
-
-export type QueryLaunchesArgs = {
-  pageSize?: Maybe<Scalars['Int']>,
-  after?: Maybe<Scalars['String']>
-};
-
-
-export type QueryLaunchArgs = {
-  id: Scalars['ID']
 };
 
 
@@ -140,27 +82,6 @@ export type QueryActivityArgs = {
   id: Scalars['ID']
 };
 
-export type Rocket = {
-   __typename?: 'Rocket',
-  id: Scalars['ID'],
-  name?: Maybe<Scalars['String']>,
-  type?: Maybe<Scalars['String']>,
-};
-
-export type TripUpdateResponse = {
-   __typename?: 'TripUpdateResponse',
-  success: Scalars['Boolean'],
-  message?: Maybe<Scalars['String']>,
-  launches?: Maybe<Array<Maybe<Launch>>>,
-};
-
-
-export type User = {
-   __typename?: 'User',
-  id: Scalars['ID'],
-  email: Scalars['String'],
-  trips: Array<Maybe<Launch>>,
-};
 
 export type ActivitySummaryFragment = (
   { __typename?: 'Activity' }
@@ -245,7 +166,7 @@ export const ActivityMetaDataDocument = gql`
   }
 export const AddActivityDocument = gql`
     mutation AddActivity($name: String!) {
-  addActivity(name: $name) {
+  addActivity(name: $name, slow: true) {
     activities {
       id
       name

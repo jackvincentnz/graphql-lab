@@ -80,7 +80,7 @@ const typeDefs = gql`
     changeActivityDate(id: String!, date: String!): ActivityUpdateResponse!
 
     # if false, change date failed -- check errors
-    deleteActivity(id: String!): ActivityUpdateResponse!
+    deleteActivity(id: ID!): ActivityUpdateResponse!
 
     # if false, booking trips failed -- check errors
     # bookTrips(launchIds: [ID]!): TripUpdateResponse!

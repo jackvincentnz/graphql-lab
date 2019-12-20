@@ -1,0 +1,11 @@
+<h1>Activities</h1>
+<ul>
+    <li *ngFor="let activity of activities">
+        {{ activity.id }}: 
+        <a 
+            [title]="activity.name + ' details'" 
+            [routerLink]="['/activity', activity.id]"
+        >{{ activity.name }}</a>
+        <button (click)="onDeleteClick(activity.id)">Delete</button>
+    </li>
+</ul>

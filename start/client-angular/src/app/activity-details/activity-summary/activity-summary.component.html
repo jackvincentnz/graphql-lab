@@ -1,0 +1,7 @@
+<h2>Activity</h2>
+<div *ngIf="loading">
+    Loading...
+</div>
+<div *ngIf="!loading">
+    <p>{{ activity.id }}: {{ activity.name }}</p>
+</div>

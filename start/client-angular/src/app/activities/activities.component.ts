@@ -1,9 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 
 import { Observable } from 'rxjs';
 
-import { ActivityQueryService } from './activity-query.service';
-import { map, startWith } from 'rxjs/operators';
+import { ActivitiesService, ListedActivity } from './activities.service';
+import { AddActivityService } from './add-activity.service';
+import { DeleteActivityService } from './delete-activity.service';
 
 @Component({
   selector: 'app-activities',
@@ -11,25 +12,22 @@ import { map, startWith } from 'rxjs/operators';
 })
 export class ActivitiesComponent {
 
-  public readonly activities$: Observable<any> = this.activityQueryService.activities$;
+  public readonly activities$: Observable<ListedActivity[]>
 
-  public readonly loading$: Observable<any> = this.activityQueryService.loading$;
+  constructor(
+    private activityQueryService: ActivitiesService, 
+    private addActivityService: AddActivityService,
+    private deleteActivityService: DeleteActivityService,
+  ) {
+    this.activities$ = this.activityQueryService.activities$;
+  }
 
-  public readonly errors$: Observable<any> = this.activityQueryService.errors$;
+  public onAddActivity(name: string) {
+    this.addActivityService.addActivity(name);
+  }
 
-  public readonly activityLoading$: Observable<any>;
-
-  public readonly activity$: Observable<any>;
-
-  constructor(private activityQueryService: ActivityQueryService) {
-    // TODO: move to activity details.
-    const activitySource$ = this.activityQueryService.activityById$("1");
-    this.activityLoading$ = activitySource$.pipe(
-      map(result => result.loading),
-      // TODO: this shouldn't be necessary?
-      startWith(true)
-    );
-    this.activity$ = activitySource$.pipe(map(result => result.data.activity));
+  public onDelete(activityId: string) {
+    this.deleteActivityService.deleteActivity(activityId);
   }
 
 }

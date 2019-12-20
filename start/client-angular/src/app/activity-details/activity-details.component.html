@@ -1,1 +1,4 @@
-<p>activity-details works!</p>
+<app-activity-summary 
+    [activity]="activity$ | async" 
+    [loading]="loading$ | async">
+</app-activity-summary>

@@ -23,3 +23,13 @@ mutation AddActivity($name: String!) {
         }
     }
 }
+
+mutation DeleteActivity($activityId: ID!) {
+    deleteActivity(id: $activityId) {
+        message
+        success
+        activities {
+            ...ActivitySummary
+        }
+    }
+}

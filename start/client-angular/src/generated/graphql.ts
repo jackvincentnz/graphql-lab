@@ -26,6 +26,7 @@ export type Activity = {
   id: Scalars['ID'],
   name?: Maybe<Scalars['String']>,
   plannedDate?: Maybe<PlannedDate>,
+  owner?: Maybe<Scalars['String']>,
 };
 
 export type ActivityUpdateResponse = {
@@ -61,7 +62,7 @@ export type MutationChangeActivityDateArgs = {
 
 
 export type MutationDeleteActivityArgs = {
-  id: Scalars['String']
+  id: Scalars['ID']
 };
 
 export type PlannedDate = {
@@ -128,6 +129,23 @@ export type AddActivityMutation = (
   ) }
 );
 
+export type DeleteActivityMutationVariables = {
+  activityId: Scalars['ID']
+};
+
+
+export type DeleteActivityMutation = (
+  { __typename?: 'Mutation' }
+  & { deleteActivity: (
+    { __typename?: 'ActivityUpdateResponse' }
+    & Pick<ActivityUpdateResponse, 'message' | 'success'>
+    & { activities: Maybe<Array<Maybe<(
+      { __typename?: 'Activity' }
+      & ActivitySummaryFragment
+    )>>> }
+  ) }
+);
+
 export const ActivitySummaryFragmentDoc = gql`
     fragment ActivitySummary on Activity {
   id
@@ -180,5 +198,24 @@ export const AddActivityDocument = gql`
   })
   export class AddActivityGQL extends Apollo.Mutation<AddActivityMutation, AddActivityMutationVariables> {
     document = AddActivityDocument;
+    
+  }
+export const DeleteActivityDocument = gql`
+    mutation DeleteActivity($activityId: ID!) {
+  deleteActivity(id: $activityId) {
+    message
+    success
+    activities {
+      ...ActivitySummary
+    }
+  }
+}
+    ${ActivitySummaryFragmentDoc}`;
+
+  @Injectable({
+    providedIn: 'root'
+  })
+  export class DeleteActivityGQL extends Apollo.Mutation<DeleteActivityMutation, DeleteActivityMutationVariables> {
+    document = DeleteActivityDocument;
     
   }

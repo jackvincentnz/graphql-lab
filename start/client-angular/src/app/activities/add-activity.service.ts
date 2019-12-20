@@ -15,7 +15,7 @@ export class AddActivityService {
       addActivity: {
         activities: [{
           id: Date.now().toString(),
-          name: name,
+          name: "I think it will be this name",
           __typename: "Activity"
         }],
         __typename: "ActivityUpdateResponse"

@@ -9,8 +9,8 @@ import { ActivityDetailsQuery } from '../activity-details.service';
 export class ActivitySummaryComponent {
 
   @Input()
-  public activity: ActivityDetailsQuery
+  public readonly activity: ActivityDetailsQuery
 
   @Input()
-  public loading: Boolean;
+  public readonly loading: Boolean;
 }

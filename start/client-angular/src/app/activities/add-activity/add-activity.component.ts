@@ -8,9 +8,9 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 export class AddActivityComponent {
 
   @Output()
-  public addActivity: EventEmitter<string>
+  public readonly addActivity: EventEmitter<string>
 
-  public addActivityForm: FormGroup;
+  public readonly addActivityForm: FormGroup;
 
   constructor(
     private formBuilder: FormBuilder,

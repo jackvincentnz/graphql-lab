@@ -23,9 +23,11 @@ export class ActivityDetailsComponent implements OnInit {
     private activityDetailsService: ActivityDetailsService, 
     private route: ActivatedRoute
   ) { 
+    this.destroy$ = new Subject<void>();
+    
     this.activityId$subject = new Subject<string>();
     this.activity$ = this.activityDetailsService.activityById$("1");
-
+    
     this.loading$ = this.activity$.pipe(
       map(result => result.loading),
       startWith(true)

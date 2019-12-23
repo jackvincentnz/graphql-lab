@@ -1,10 +1,8 @@
-<app-activity-list 
+<app-activity-list
     [activities]="activities$ | async"
     (delete)="onDelete($event)"
->
-</app-activity-list>
+></app-activity-list>
 
-<app-add-activity 
+<app-add-activity
     (addActivity)="onAddActivity($event)"
->
-</app-add-activity>
+></app-add-activity>

@@ -1,6 +1,17 @@
+const { PubSub } = require('apollo-server');
+
 const { paginateResults } = require('./utils');
 
+const ACTIVITIES_UPDATED = 'ACTIVITIES_UPDATED';
+
+const pubsub = new PubSub();
+
 module.exports = {
+  Subscription: {
+    activitiesUpdated: {
+      subscribe: () => pubsub.asyncIterator([ACTIVITIES_UPDATED])
+    }
+  },
   Query: {
     // launches: async (_, { pageSize = 20, after }, { dataSources }) => {
     //   const allLaunches = await dataSources.launchAPI.getAllLaunches();
@@ -71,6 +82,10 @@ module.exports = {
   // },
   Mutation: {
     addActivity: async (_, { name, slow }, { dataSources }) => {
+      // to mock multiple updates before real update
+      const activities = await dataSources.activityAPI.getActivities();
+      const initialActivities = [...activities];
+
       const result = await dataSources.activityAPI.addActivity({ name, slow });
   
       if (!result)
@@ -80,6 +95,16 @@ module.exports = {
         };
   
       const activity = await dataSources.activityAPI.getActivityById({ activityId: result.id });
+
+      setTimeout(() => {
+        // wait 2s and mock other updates before expected update.
+        pubsub.publish(ACTIVITIES_UPDATED, { activitiesUpdated: initialActivities });
+        pubsub.publish(ACTIVITIES_UPDATED, { activitiesUpdated: initialActivities });
+
+        const updatedActivities = dataSources.activityAPI.getActivities();
+        pubsub.publish(ACTIVITIES_UPDATED, { activitiesUpdated: updatedActivities });
+      }, 2000);
+
       return {
         success: true,
         message: 'activity added',

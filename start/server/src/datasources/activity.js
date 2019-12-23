@@ -28,7 +28,7 @@ class ActivityAPI extends DataSource {
   }
 
   async addActivity({ name, slow }) {
-    if (slow) await sleep(1000);
+    if (slow) await sleep(2000);
     const newActivity = { id: newActivityId.toString(), name};
     
     activities.push(newActivity);

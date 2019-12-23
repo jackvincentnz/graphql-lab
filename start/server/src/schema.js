@@ -1,6 +1,10 @@
 const { gql } = require('apollo-server');
 
 const typeDefs = gql`
+  type Subscription {
+    activitiesUpdated: [Activity]!
+  }
+
   type Query {
     # launches( # replace the current launches query with this one.
     #   """

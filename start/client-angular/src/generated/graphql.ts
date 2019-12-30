@@ -16,11 +16,6 @@ export type Scalars = {
 
 
 
-/** 
- * Simple wrapper around our list of launches that contains a cursor to the
- * last item in the list. Pass this cursor to the launches query to fetch results
- * after these.
- */
 export type Activity = {
    __typename?: 'Activity',
   id: Scalars['ID'],
@@ -83,6 +78,11 @@ export type QueryActivityArgs = {
   id: Scalars['ID']
 };
 
+export type Subscription = {
+   __typename?: 'Subscription',
+  activitiesUpdated: Array<Maybe<Activity>>,
+};
+
 
 export type ActivitySummaryFragment = (
   { __typename?: 'Activity' }
@@ -98,19 +98,6 @@ export type ListedActivitiesQuery = (
     { __typename?: 'Activity' }
     & ActivitySummaryFragment
   )>> }
-);
-
-export type ActivityMetaDataQueryVariables = {
-  activityId: Scalars['ID']
-};
-
-
-export type ActivityMetaDataQuery = (
-  { __typename?: 'Query' }
-  & { activity: Maybe<(
-    { __typename?: 'Activity' }
-    & ActivitySummaryFragment
-  )> }
 );
 
 export type AddActivityMutationVariables = {
@@ -146,6 +133,30 @@ export type DeleteActivityMutation = (
   ) }
 );
 
+export type OnActivitiesUpdatedSubscriptionVariables = {};
+
+
+export type OnActivitiesUpdatedSubscription = (
+  { __typename?: 'Subscription' }
+  & { activitiesUpdated: Array<Maybe<(
+    { __typename?: 'Activity' }
+    & ActivitySummaryFragment
+  )>> }
+);
+
+export type ActivityMetaDataQueryVariables = {
+  activityId: Scalars['ID']
+};
+
+
+export type ActivityMetaDataQuery = (
+  { __typename?: 'Query' }
+  & { activity: Maybe<(
+    { __typename?: 'Activity' }
+    & ActivitySummaryFragment
+  )> }
+);
+
 export const ActivitySummaryFragmentDoc = gql`
     fragment ActivitySummary on Activity {
   id
@@ -165,21 +176,6 @@ export const ListedActivitiesDocument = gql`
   })
   export class ListedActivitiesGQL extends Apollo.Query<ListedActivitiesQuery, ListedActivitiesQueryVariables> {
     document = ListedActivitiesDocument;
-    
-  }
-export const ActivityMetaDataDocument = gql`
-    query ActivityMetaData($activityId: ID!) {
-  activity(id: $activityId) {
-    ...ActivitySummary
-  }
-}
-    ${ActivitySummaryFragmentDoc}`;
-
-  @Injectable({
-    providedIn: 'root'
-  })
-  export class ActivityMetaDataGQL extends Apollo.Query<ActivityMetaDataQuery, ActivityMetaDataQueryVariables> {
-    document = ActivityMetaDataDocument;
     
   }
 export const AddActivityDocument = gql`
@@ -217,5 +213,35 @@ export const DeleteActivityDocument = gql`
   })
   export class DeleteActivityGQL extends Apollo.Mutation<DeleteActivityMutation, DeleteActivityMutationVariables> {
     document = DeleteActivityDocument;
+    
+  }
+export const OnActivitiesUpdatedDocument = gql`
+    subscription onActivitiesUpdated {
+  activitiesUpdated {
+    ...ActivitySummary
+  }
+}
+    ${ActivitySummaryFragmentDoc}`;
+
+  @Injectable({
+    providedIn: 'root'
+  })
+  export class OnActivitiesUpdatedGQL extends Apollo.Subscription<OnActivitiesUpdatedSubscription, OnActivitiesUpdatedSubscriptionVariables> {
+    document = OnActivitiesUpdatedDocument;
+    
+  }
+export const ActivityMetaDataDocument = gql`
+    query ActivityMetaData($activityId: ID!) {
+  activity(id: $activityId) {
+    ...ActivitySummary
+  }
+}
+    ${ActivitySummaryFragmentDoc}`;
+
+  @Injectable({
+    providedIn: 'root'
+  })
+  export class ActivityMetaDataGQL extends Apollo.Query<ActivityMetaDataQuery, ActivityMetaDataQueryVariables> {
+    document = ActivityMetaDataDocument;
     
   }

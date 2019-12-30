@@ -3,7 +3,8 @@ import { Injectable } from '@angular/core';
 import { map } from 'rxjs/operators';
 import { Observable, } from 'rxjs';
 
-import { ListedActivitiesGQL } from 'src/generated/graphql';
+import { ListedActivitiesGQL, ListedActivitiesQuery, ListedActivitiesQueryVariables, OnActivitiesUpdatedSubscriptionVariables, OnActivitiesUpdatedSubscription, OnActivitiesUpdatedDocument } from 'src/generated/graphql';
+import { QueryRef } from 'apollo-angular';
 
 export interface ListedActivity {
   id: string;
@@ -16,13 +17,28 @@ export interface ListedActivity {
 export class ActivitiesService {
   public readonly activities$: Observable<ListedActivity[]>;
 
-  constructor(
-    private listedActivitiesQuery: ListedActivitiesGQL, 
-  ) {
-    const activitiesQueryRef = this.listedActivitiesQuery.watch();
+  private readonly activitiesQueryRef: QueryRef<ListedActivitiesQuery, ListedActivitiesQueryVariables>;
 
-    this.activities$ = activitiesQueryRef.valueChanges.pipe(
+  constructor(
+    private listedActivitiesQuery: ListedActivitiesGQL,
+  ) {
+    this.activitiesQueryRef = this.listedActivitiesQuery.watch();
+    this.subscribeToActivityUpdates();
+
+    this.activities$ = this.activitiesQueryRef.valueChanges.pipe(
       map(result => result.data && result.data.activities as ListedActivity[])
     );
+  }
+
+  private subscribeToActivityUpdates() {
+    this.activitiesQueryRef.subscribeToMore<OnActivitiesUpdatedSubscription, OnActivitiesUpdatedSubscriptionVariables>({
+      document: OnActivitiesUpdatedDocument,
+      updateQuery: (prev, {subscriptionData}) => {
+        if (!subscriptionData.data) {
+          return prev;
+        }
+        return { ...prev, activities: subscriptionData.data.activitiesUpdated };
+      }
+    });
   }
 }

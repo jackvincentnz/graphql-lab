@@ -1,0 +1,5 @@
+query ActivityMetaData($activityId: ID!) {
+    activity(id: $activityId) {
+        ...ActivitySummary
+    }
+}

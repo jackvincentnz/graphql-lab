@@ -9,12 +9,6 @@ query ListedActivities {
     }
 }
 
-query ActivityMetaData($activityId: ID!) {
-    activity(id: $activityId) {
-        ...ActivitySummary
-    }
-}
-
 mutation AddActivity($name: String!) {
     addActivity(name: $name, slow: true) {
         activities {
@@ -31,5 +25,11 @@ mutation DeleteActivity($activityId: ID!) {
         activities {
             ...ActivitySummary
         }
+    }
+}
+
+subscription onActivitiesUpdated {
+    activitiesUpdated {
+        ...ActivitySummary
     }
 }

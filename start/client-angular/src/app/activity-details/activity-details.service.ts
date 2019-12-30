@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { map } from 'rxjs/operators';
 import { ActivityMetaDataGQL } from 'src/generated/graphql';
-import { Observable, of, EMPTY } from 'rxjs';
+import { Observable } from 'rxjs';
 
 export interface ActivityDetailsQuery {
   id: string,

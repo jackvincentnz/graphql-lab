@@ -9,6 +9,7 @@ import { QueryRef } from 'apollo-angular';
 export interface ListedActivity {
   id: string;
   name: string;
+  isSelected: boolean;
 }
 
 @Injectable({

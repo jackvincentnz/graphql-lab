@@ -1,6 +1,7 @@
 <app-activity-list
     [activities]="activities$ | async"
     (delete)="onDelete($event)"
+    (rowClick)="onRowClick($event)"
 ></app-activity-list>
 
 <app-add-activity

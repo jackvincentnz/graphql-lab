@@ -1,0 +1,13 @@
+extend type Activity {
+    isSelected: Boolean!
+}
+
+extend type Query {
+    # TODO: return activity instead of id
+    selectedActivity: ID!
+}
+
+extend type Mutation {
+    # TODO: investigate return types for mutations like this
+    selectOrDeselect(id: ID!): Boolean
+}

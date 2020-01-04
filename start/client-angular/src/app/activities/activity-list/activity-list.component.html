@@ -1,6 +1,10 @@
 <h1>Activities</h1>
 <ul>
-    <li *ngFor="let activity of activities">
+    <li 
+        *ngFor="let activity of activities" 
+        [style.background-color]="activity.isSelected ? 'red' : 'inherit'"
+        (click)="onRowClick(activity.id)"
+    >
         {{ activity.id }}: 
         <a 
             [title]="activity.name + ' details'" 

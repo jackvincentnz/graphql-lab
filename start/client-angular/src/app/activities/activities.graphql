@@ -1,6 +1,7 @@
 fragment ActivitySummary on Activity {
     id
     name
+    isSelected @client
 }
 
 query ListedActivities {
@@ -9,11 +10,14 @@ query ListedActivities {
     }
 }
 
+query SelectedActivity {
+    selectedActivity @client
+}
+
 mutation AddActivity($name: String!) {
     addActivity(name: $name, slow: true) {
         activities {
-            id
-            name
+            ...ActivitySummary
         }
     }
 }
@@ -26,6 +30,10 @@ mutation DeleteActivity($activityId: ID!) {
             ...ActivitySummary
         }
     }
+}
+
+mutation SelectActivity($activityId: ID!) {
+    selectOrDeselect(id: $activityId) @client
 }
 
 subscription onActivitiesUpdated {

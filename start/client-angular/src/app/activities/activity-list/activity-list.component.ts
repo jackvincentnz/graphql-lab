@@ -13,12 +13,20 @@ export class ActivityListComponent {
   @Output()
   public readonly delete: EventEmitter<string>; 
 
+  @Output()
+  public readonly rowClick: EventEmitter<string>; 
+
   constructor() {
     this.delete = new EventEmitter<string>();
+    this.rowClick = new EventEmitter<string>();
   }
 
   public onDeleteClick(activityId: string) {
     this.delete.emit(activityId);
+  }
+
+  public onRowClick(activityId: string) {
+    this.rowClick.emit(activityId);
   }
 
 }

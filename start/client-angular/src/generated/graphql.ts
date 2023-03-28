@@ -22,6 +22,7 @@ export type Activity = {
   name?: Maybe<Scalars['String']>,
   plannedDate?: Maybe<PlannedDate>,
   owner?: Maybe<Scalars['String']>,
+  isSelected: Scalars['Boolean'],
 };
 
 export type ActivityUpdateResponse = {
@@ -41,6 +42,7 @@ export type Mutation = {
   addActivity: ActivityUpdateResponse,
   changeActivityDate: ActivityUpdateResponse,
   deleteActivity: ActivityUpdateResponse,
+  selectOrDeselect?: Maybe<Scalars['Boolean']>,
 };
 
 
@@ -60,6 +62,11 @@ export type MutationDeleteActivityArgs = {
   id: Scalars['ID']
 };
 
+
+export type MutationSelectOrDeselectArgs = {
+  id: Scalars['ID']
+};
+
 export type PlannedDate = {
    __typename?: 'PlannedDate',
   startOn: Scalars['String'],
@@ -71,6 +78,7 @@ export type Query = {
    __typename?: 'Query',
   activity?: Maybe<Activity>,
   activities: Array<Maybe<Activity>>,
+  selectedActivity: Scalars['ID'],
 };
 
 
@@ -86,7 +94,7 @@ export type Subscription = {
 
 export type ActivitySummaryFragment = (
   { __typename?: 'Activity' }
-  & Pick<Activity, 'id' | 'name'>
+  & Pick<Activity, 'id' | 'name' | 'isSelected'>
 );
 
 export type ListedActivitiesQueryVariables = {};
@@ -100,6 +108,14 @@ export type ListedActivitiesQuery = (
   )>> }
 );
 
+export type SelectedActivityQueryVariables = {};
+
+
+export type SelectedActivityQuery = (
+  { __typename?: 'Query' }
+  & Pick<Query, 'selectedActivity'>
+);
+
 export type AddActivityMutationVariables = {
   name: Scalars['String']
 };
@@ -111,7 +127,7 @@ export type AddActivityMutation = (
     { __typename?: 'ActivityUpdateResponse' }
     & { activities: Maybe<Array<Maybe<(
       { __typename?: 'Activity' }
-      & Pick<Activity, 'id' | 'name'>
+      & ActivitySummaryFragment
     )>>> }
   ) }
 );
@@ -131,6 +147,16 @@ export type DeleteActivityMutation = (
       & ActivitySummaryFragment
     )>>> }
   ) }
+);
+
+export type SelectActivityMutationVariables = {
+  activityId: Scalars['ID']
+};
+
+
+export type SelectActivityMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'selectOrDeselect'>
 );
 
 export type OnActivitiesUpdatedSubscriptionVariables = {};
@@ -161,6 +187,7 @@ export const ActivitySummaryFragmentDoc = gql`
     fragment ActivitySummary on Activity {
   id
   name
+  isSelected @client
 }
     `;
 export const ListedActivitiesDocument = gql`
@@ -178,16 +205,28 @@ export const ListedActivitiesDocument = gql`
     document = ListedActivitiesDocument;
     
   }
+export const SelectedActivityDocument = gql`
+    query SelectedActivity {
+  selectedActivity @client
+}
+    `;
+
+  @Injectable({
+    providedIn: 'root'
+  })
+  export class SelectedActivityGQL extends Apollo.Query<SelectedActivityQuery, SelectedActivityQueryVariables> {
+    document = SelectedActivityDocument;
+    
+  }
 export const AddActivityDocument = gql`
     mutation AddActivity($name: String!) {
   addActivity(name: $name, slow: true) {
     activities {
-      id
-      name
+      ...ActivitySummary
     }
   }
 }
-    `;
+    ${ActivitySummaryFragmentDoc}`;
 
   @Injectable({
     providedIn: 'root'
@@ -213,6 +252,19 @@ export const DeleteActivityDocument = gql`
   })
   export class DeleteActivityGQL extends Apollo.Mutation<DeleteActivityMutation, DeleteActivityMutationVariables> {
     document = DeleteActivityDocument;
+    
+  }
+export const SelectActivityDocument = gql`
+    mutation SelectActivity($activityId: ID!) {
+  selectOrDeselect(id: $activityId) @client
+}
+    `;
+
+  @Injectable({
+    providedIn: 'root'
+  })
+  export class SelectActivityGQL extends Apollo.Mutation<SelectActivityMutation, SelectActivityMutationVariables> {
+    document = SelectActivityDocument;
     
   }
 export const OnActivitiesUpdatedDocument = gql`

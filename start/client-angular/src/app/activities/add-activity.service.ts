@@ -16,6 +16,7 @@ export class AddActivityService {
         activities: [{
           id: Date.now().toString(),
           name: "I think it will be this name",
+          isSelected: true,
           __typename: "Activity"
         }],
         __typename: "ActivityUpdateResponse"
